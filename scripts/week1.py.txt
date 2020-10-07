@@ -1,3 +1,87 @@
+
 import pandas as pd
 import numpy as np
-print("Hello Capstone Project Course!")
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+from sklearn import preprocessing
+from sklearn.neighbors import KNeighborsClassifier
+df2 = pd.read_csv('https://s3.us.cloud-object-storage.appdomain.cloud/cf-courses-data/CognitiveClass/DP0701EN/version-2/Data-Collisions.csv')
+df=df2[['SEVERITYCODE','WEATHER','ROADCOND','LIGHTCOND']]
+df2.SEVERITYCODE.value_counts()
+#dropping all the null values from the data set
+df=df.dropna()
+#checking if null values still exists
+df.isnull().sum().sum()
+0
+#Label Encoding- transforming the values into int64
+from sklearn.preprocessing import LabelEncoder
+labelencoder = LabelEncoder()
+df['WEATHER'] = labelencoder.fit_transform(df['WEATHER'])
+df['ROADCOND'] = labelencoder.fit_transform(df['ROADCOND'])  
+df['LIGHTCOND'] = labelencoder.fit_transform(df['LIGHTCOND']) 
+# df['WEATHER'].get_dummies()
+df.head()
+df['SEVERITYCODE'].value_counts()
+from sklearn.utils import resample
+#dont run this, this is just for practiving Hot Codes
+#df=pd.get_dummies(df,columns=['WEATHER','ROADCOND','LIGHTCOND'])
+#df.head()
+SEVERITYCODE    int64
+WEATHER         int64
+ROADCOND        int64
+LIGHTCOND       int64
+dtype: object
+df['WEATHER'].value_counts()
+df['ROADCOND'].value_counts()
+df['LIGHTCOND'].value_counts()
+y=np.asarray(df['SEVERITYCODE'])
+y[0:5]
+X=np.asarray(df[['WEATHER','ROADCOND','LIGHTCOND']])
+X[0:5]
+#Train/Test Split
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.3)
+print('train set:', X_train.shape,y_train.shape)
+print('Test set:',X_test.shape,y_test.shape)
+k=20
+knn=KNeighborsClassifier(n_neighbors = k).fit(X_train,y_train)
+knn_y_pred = knn.predict(X_test)
+#ACCURACY
+acc = accuracy_score(y_test,knn_y_pred)
+acc
+from sklearn.metrics import jaccard_similarity_score
+from sklearn.metrics import f1_score
+trainScores_jaccard=jaccard_similarity_score(y_test, knn_y_pred)
+trainScore_f1_score=f1_score(y_test, knn_y_pred, average='weighted')
+from sklearn.metrics import jaccard_similarity_score
+from sklearn.metrics import f1_score
+trainScores_jaccard=jaccard_similarity_score(y_test, knn_y_pred)
+trainScore_f1_score=f1_score(y_test, knn_y_pred, average='weighted')
+trainScore_f1_score
+from sklearn.tree import DecisionTreeClassifier
+dt=DecisionTreeClassifier(criterion="entropy",max_depth=7)
+dt.fit(X_train,y_train)
+dt_y_pred=dt.predict(X_test)
+dt_y_pred
+#Accuracy
+acc_decision = accuracy_score(y_test,dt_y_pred)
+acc_decision
+from sklearn.metrics import jaccard_similarity_score
+from sklearn.metrics import f1_score
+jaccard1=jaccard_similarity_score(y_test, dt_y_pred)
+f1_score1=f1_score(y_test, dt_y_pred, average='macro')
+jaccard1
+f1_score1
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix
+logistic_y_pred=logistic_dt.predict(X_test)
+logistic_y_prob=logistic_dt.predict_proba(X_test)
+logistic_dt=LogisticRegression(C=7, solver='liblinear').fit(X_train,y_train)
+logistic_y_pred
+logistic_y_prob
+#ACCURACY
+acc_logistic = accuracy_score(y_test,logistic_y_pred)
+acc_logistic
+logistic_jaccard
+logistic_f1_score
